@@ -67,6 +67,12 @@ job_search_tracker.csv
 # Upskill reports (personal output)
 upskill/*.md
 
+# Market-specific job descriptions and generated outputs are personal.
+markets/*/jobs/inbox/**
+markets/*/jobs/evaluated/**
+markets/*/jobs/archived/**
+!markets/*/jobs/**/.gitkeep
+
 # Agent skills: track the source, ignore only deps and logs.
 # (A blanket `.agents/` ignore silently drops the job-search CLI skills from the repo.)
 .agents/**/node_modules/
