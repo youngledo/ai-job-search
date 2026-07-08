@@ -34,16 +34,25 @@ Extract, when present:
 - Role title.
 - Platform/source.
 - Location and work mode.
-- Salary range.
+- Salary range, salary months, bonus structure, stock/options, and whether the
+  figure is pre-tax.
 - Department/team.
 - Responsibilities.
 - Required skills.
 - Preferred skills.
 - Experience level.
 - Education/language requirements.
+- Work schedule: standard 5-day, flexible, 996,大小周, on-call, frequent overtime.
+- Employment type: direct hire, outsourcing, labor dispatch / 劳务派遣, contractor,
+  internship, or unclear.
+- Social insurance / 五险一金: full contribution, minimum-base contribution,
+  unclear, or absent.
+- Probation terms: length, probation salary, conversion criteria, and any unpaid
+  trial-work signal.
 - Application deadline.
 - Red flags such as vague role scope, unpaid trial work, heavy overtime signals,
-  unrealistic skill stack, or salary mismatch.
+  unrealistic skill stack, outsourcing/dispatch ambiguity, abnormal probation,
+  social-insurance ambiguity, or salary mismatch.
 
 If facts are missing, list them under `Assumptions / Missing Info` instead of
 guessing.
@@ -57,7 +66,8 @@ Score each dimension from 0 to 100:
 - Domain match: industry, customer type, product type, market familiarity.
 - Communication fit: writing, stakeholder, sales, cross-team, or client-facing
   expectations.
-- Compensation/location fit: salary, city, commute, remote/hybrid fit.
+- Compensation/location fit: salary range, salary months, tax basis, city,
+  commute, remote/hybrid fit, social insurance, probation, and employment type.
 - Growth fit: whether the role advances the user's target direction.
 
 Overall score:
@@ -109,6 +119,16 @@ Use this structure:
 ## Red Flags
 
 - ...
+
+## China-Market Checks
+
+| Check | Finding | Risk |
+|---|---|---|
+| Salary package | ... | ... |
+| Work schedule | ... | ... |
+| Social insurance / 五险一金 | ... | ... |
+| Probation / 试用期 | ... | ... |
+| Employment type | ... | ... |
 
 ## Recommended Next Action
 

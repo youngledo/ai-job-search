@@ -25,7 +25,7 @@ Actions:
 ## Guardrails
 
 - Do not scrape, log in to, message through, or automate BOSS Zhipin, Liepin,
-  Lagou, Maimai, LinkedIn, or any other job platform.
+  Zhaopin, 51job, Maimai, LinkedIn, or any other job platform.
 - Use only manually saved job descriptions under `markets/china/jobs/inbox/`,
   user-pasted text, or files the user explicitly points to.
 - Treat `markets/china/profile/evidence.md` and the profile files as the source

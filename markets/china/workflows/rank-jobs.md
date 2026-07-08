@@ -41,6 +41,13 @@ Apply hard vetoes for:
 
 - City/work mode outside stated hard constraints.
 - Salary clearly below minimum expectation.
+- Salary package that hides salary months, tax basis, or variable pay in a way
+  that prevents honest comparison.
+- 996,大小周, frequent unpaid overtime, or on-call expectations outside stated
+  preferences.
+- Outsourcing, labor dispatch / 劳务派遣, contractor, or驻场 arrangements outside
+  stated preferences.
+- Social insurance / 五险一金 or probation terms that violate stated hard requirements.
 - Required skill or credential that the candidate clearly lacks and cannot
   credibly bridge.
 - Role type listed under `暂不考虑岗位`.
@@ -72,6 +79,13 @@ Ranked <N> jobs. Skipped <M> jobs due to insufficient JD detail.
 ## Vetoed / Skipped
 
 ...
+
+## China-Market Risk Notes
+
+- Salary months / tax basis:
+- Work schedule:
+- Social insurance / probation:
+- Employment type:
 
 ## Assumptions / Missing Info
 

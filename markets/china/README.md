@@ -18,7 +18,7 @@
 ## 推荐流程
 
 1. 运行 `/china setup`，填写 `markets/china/profile/` 下的个人资料。
-2. 从 BOSS 直聘、猎聘、拉勾、脉脉、公司官网等渠道手动复制岗位 JD。
+2. 从 BOSS 直聘、猎聘、智联招聘、前程无忧、脉脉、公司官网等渠道手动复制岗位 JD。
 3. 将岗位保存为 `markets/china/jobs/inbox/<company>-<role>.md`。
 4. 运行 `/china analyze <file>` 判断是否值得沟通或投递。
 5. 对值得推进的岗位运行 `/china apply <file>`，生成打招呼话术、招聘者私信、

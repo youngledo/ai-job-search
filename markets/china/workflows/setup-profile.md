@@ -22,6 +22,9 @@ Check for:
 - Empty profile sections.
 - Placeholders that still need user input.
 - Missing target roles, target cities, salary expectations, and hard exclusions.
+- Missing China-market logistics: years of experience, availability, expected
+  monthly salary and salary months, acceptable work schedule, social insurance
+  requirements, probation limits, and whether outsourcing / labor dispatch is acceptable.
 - Experience claims in `candidate.md` that do not have matching support in
   `evidence.md`.
 
@@ -49,6 +52,8 @@ Before finishing, verify:
 - Candidate identity and contact details are consistent.
 - Target roles and hard exclusions are present.
 - Salary expectations are either filled in or explicitly marked as undecided.
+- Work schedule, social insurance, probation, outsourcing / labor dispatch, and
+  availability preferences are either filled in or explicitly marked as undecided.
 - Every major claimed strength has evidence.
 - Unsupported claims are moved to `需要补充证据的内容` or `不应声称的内容`.
 

@@ -26,6 +26,8 @@ Read:
 - `markets/china/templates/recruiter-message.md`
 - `markets/china/templates/chinese-cover-letter.md`
 - `markets/china/templates/interview-answer.md`
+- `cv/chinese/main_example.tex`
+- `cover_letters/chinese/cover_example.tex`
 
 If an evaluation exists under `markets/china/jobs/evaluated/` for the same company/role,
 read it and use its score, strengths, gaps, and red flags.
@@ -51,6 +53,10 @@ Produce:
 - 中文求职信/邮件: concise, role-specific, evidence-backed.
 - 简历修改建议: bullets to emphasize, bullets to remove, keywords to add only if
   evidence supports them.
+- 中文 LaTeX 简历/求职信生成建议: if the user explicitly asks for full `.tex`
+  files, use `cv/chinese/main_example.tex` and
+  `cover_letters/chinese/cover_example.tex` as structural references. Otherwise,
+  keep the output as targeted resume-editing guidance and a concise letter/email.
 - 面试准备重点: likely questions and evidence-backed answer angles.
 
 Tone:
@@ -89,6 +95,12 @@ Write `markets/china/jobs/evaluated/<slug>-application.md`:
 ## Resume Tailoring Suggestions
 
 ...
+
+## Chinese LaTeX Template Notes
+
+Use `cv/chinese/main_example.tex` and `cover_letters/chinese/cover_example.tex`
+only if the user asks for full compilable documents. Keep all generated personal
+files out of git-tracked template paths.
 
 ## Interview Focus
 
