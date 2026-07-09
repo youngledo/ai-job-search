@@ -20,9 +20,9 @@ responsibilities or requirements.
 
 Read:
 
-- `markets/china/profile/candidate.md`
-- `markets/china/profile/preferences.md`
-- `markets/china/profile/evidence.md`
+- `documents/china/profile/candidate.md`
+- `documents/china/profile/preferences.md`
+- `documents/china/profile/evidence.md`
 
 If the profile is too sparse, stop and ask the user to run `/china setup`.
 

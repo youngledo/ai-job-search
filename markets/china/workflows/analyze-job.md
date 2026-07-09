@@ -19,9 +19,9 @@ the JD under `markets/china/jobs/inbox/` or provide a valid path.
 Read:
 
 - The job file.
-- `markets/china/profile/candidate.md`
-- `markets/china/profile/preferences.md`
-- `markets/china/profile/evidence.md`
+- `documents/china/profile/candidate.md`
+- `documents/china/profile/preferences.md`
+- `documents/china/profile/evidence.md`
 
 If profile files are still sparse, continue only if the job can be evaluated
 honestly. Otherwise ask the user to run `/china setup` first.

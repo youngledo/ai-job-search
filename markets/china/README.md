@@ -18,7 +18,9 @@
 
 ## 推荐流程
 
-1. 运行 `/china setup`，填写 `markets/china/profile/` 下的个人资料。
+1. 运行 `/china setup`，初始化并填写 `documents/china/profile/` 下的个人资料。
+   模板位于 `markets/china/profile/`（tracked），个人数据写入 `documents/china/profile/`
+   （gitignored，不会提交到仓库）。
 2. 运行 `/china scrape`，从 BOSS 直聘、猎聘、智联招聘、前程无忧、脉脉、国聘、
    公司官网等公开来源低频搜索岗位。
 3. 如果公开页面可读取，工具会保存完整 JD；如果遇到登录、反爬或内容不完整，
@@ -41,12 +43,35 @@
 - 不绕过登录、验证码、反爬或访问限制。
 - 自动读取失败时，退回到手动补全 JD。
 - 不高频批量采集岗位。
-- 不生成无法由 `markets/china/profile/evidence.md` 或 profile 文件支撑的经历陈述。
+- 不生成无法由 `documents/china/profile/evidence.md` 或 profile 文件支撑的经历陈述。
 - 对缺失技能或经验要明确标记为 gap，不能包装成已有经验。
+
+## 写作规范（中文标点）
+
+所有写入 `markets/china/` 的中文文本（profile、岗位 JD、评估报告、求职信、BOSS/猎头沟通话术、面试答案、模板等）必须使用**全角中文标点**：
+
+- 括号：`（`、`）`，不要用 `(`、`)`
+- 冒号：`：`，不要用 `:`
+- 问号：`？`，不要用 `?`
+- 感叹号：`！`，不要用 `!`
+- 逗号：`，`，不要用 `,`
+- 句号：`。`，不要用 `.`
+- 分号：`；`，不要用 `;`
+- 引号：`""`、`''`（直角引号 `「」` 也接受）
+
+**保留 ASCII 标点的场景**：
+
+- 英文单词、数字之间（如 `Spring Boot`、`12 years`、`28-35K`、`G1`、`OAuth2`）
+- Markdown 语法（`|`、`**`、`` ` ``、`#`、`-`、`>`）
+- 代码、命令行、文件路径、URL
+- 日期与版本号区间（如 `2021.12-至今`、`2024.06-2024.12`、`v1.2.3`）
+
+**判断口诀**：夹在两个汉字之间的 ASCII 标点必须替换为全角；夹在英文/数字之间、或属于 Markdown 语法/代码/路径的 ASCII 标点保留不变。
 
 ## 目录说明
 
-- `profile/`: 个人资料、求职偏好和事实证据库。
+- `profile/`: 个人资料、求职偏好和事实证据库的**模板**（tracked，只读）。实际
+  个人数据写入 `documents/china/profile/`（gitignored）。
 - `search-queries.md`: 中国大陆公开岗位搜索查询配置。
 - `jobs/inbox/`: 手动保存的岗位 JD。
 - `jobs/evaluated/`: 岗位评估、申请材料和排序报告输出。

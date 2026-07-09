@@ -19,9 +19,9 @@ If the path is missing or invalid, stop and ask for a valid job file under
 Read:
 
 - The job file.
-- `markets/china/profile/candidate.md`
-- `markets/china/profile/preferences.md`
-- `markets/china/profile/evidence.md`
+- `documents/china/profile/candidate.md`
+- `documents/china/profile/preferences.md`
+- `documents/china/profile/evidence.md`
 - `markets/china/templates/boss-greeting.md`
 - `markets/china/templates/recruiter-message.md`
 - `markets/china/templates/chinese-cover-letter.md`

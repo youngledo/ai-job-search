@@ -14,7 +14,7 @@ scrape [focus|broad]
 ```
 
 - No focus: use the top target roles, cities, and industries from
-  `markets/china/profile/preferences.md`.
+  `documents/china/profile/preferences.md`.
 - `focus`: prioritize that role, skill, industry, or city.
 - `broad`: run more query categories, but keep volume low.
 
@@ -22,8 +22,8 @@ scrape [focus|broad]
 
 Read:
 
-- `markets/china/profile/preferences.md`
-- `markets/china/profile/candidate.md`
+- `documents/china/profile/preferences.md`
+- `documents/china/profile/candidate.md`
 - `markets/china/search-queries.md`
 - `job_search_tracker.csv` if it exists
 - `job_scraper/seen_jobs.json` if it exists; create it if missing with
@@ -85,7 +85,18 @@ Classify each result:
 - `blocked`: page explicitly blocks automated/public access.
 - `duplicate`: URL or company+role already appears in `seen_jobs.json`,
   `job_search_tracker.csv`, or `markets/china/jobs/inbox/`.
-- `skip`: unrelated, expired, outside constraints, or too weak to keep.
+- `skip`: unrelated, expired, outside constraints, or too weak to keep. Also
+  applies when the JD explicitly requires education credentials the candidate
+  does not have — see `documents/china/profile/preferences.md` "学历排除":
+  - "全日制本科" (without "接受专升本" wording)
+  - "统招本科" (meaning full-time unified enrollment, excluding 统招专升本)
+  - "学士学位" (candidate has graduation certificate but no degree certificate)
+  - "985/211 本科"
+  - Record the trigger in the `seen_jobs.json` entry's `skip_reason` as
+    `education_mismatch_<specific_wording>`, e.g.
+    `education_mismatch_full_time_bachelor`,
+    `education_mismatch_bachelor_degree_required`,
+    `education_mismatch_985_211`.
 
 Never infer missing responsibilities, requirements, salary, or benefits from the
 title alone.
@@ -197,7 +208,7 @@ Then show:
 
 If no ready results are found, say whether the blocker was search quality,
 platform blocking, sparse profile preferences, or too-strict filters. Suggest
-either refining `markets/china/profile/preferences.md` or manually adding a JD.
+either refining `documents/china/profile/preferences.md` or manually adding a JD.
 
 ## Important Rules
 

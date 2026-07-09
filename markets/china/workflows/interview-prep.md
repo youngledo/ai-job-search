@@ -18,9 +18,9 @@ If the path is missing or invalid, ask the user for a job file under
 Read:
 
 - The job or evaluation file.
-- `markets/china/profile/candidate.md`
-- `markets/china/profile/preferences.md`
-- `markets/china/profile/evidence.md`
+- `documents/china/profile/candidate.md`
+- `documents/china/profile/preferences.md`
+- `documents/china/profile/evidence.md`
 - `markets/china/templates/interview-answer.md`
 
 If an application pack exists for the same company/role, read it for positioning
@@ -47,7 +47,7 @@ For each important question, provide:
 - Metrics or facts to mention.
 - What not to overclaim.
 
-Use `markets/china/profile/evidence.md` as the source of truth.
+Use `documents/china/profile/evidence.md` as the source of truth.
 
 ## Step 4: Prepare Questions To Ask
 

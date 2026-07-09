@@ -64,6 +64,8 @@ documents/linkedin/**
 documents/diplomas/**
 documents/references/**
 documents/applications/**
+# Market-specific personal profile data (user-filled from markets/<market>/profile/ templates)
+documents/*/profile/**
 !documents/**/.gitkeep
 
 # Personal job search tracking
