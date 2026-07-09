@@ -242,6 +242,40 @@ xelatex -interaction=nonstopmode cover_example.tex
 - 如果要公开仓库，先确认 `markets/china/profile/`、`markets/china/jobs/`、
   `documents/` 和 `job_search_tracker.csv` 中没有个人隐私。
 
+## 上游通用功能（英文文档）
+
+本仓库 fork 自 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)，保留了
+上游的全部通用工作流（英文）。与中国市场并行的常用命令：
+
+- `/setup`：通用 onboarding（可指向 `documents/` 文件夹、粘贴 CV 或交互式访谈）。
+- `/apply`：英文 CV + 求职信的 drafter-reviewer 工作流，包含 PDF 编译与 ATS 文本层校验。
+- `/expand`：基于 `documents/` 与公开信息扩展能力档案。
+- `/rank`、`/interview`、`/outcome`：通用版本的岗位排序、面试准备与结果归档。
+- `/add-template`：注册自定义 LaTeX 模板（占位符形式，可安全提交）。
+- `/add-portal`：为你的国家/地区生成本地招聘门户 CLI skill（拒绝登录墙门户）。
+- `/reset`：清除 profile 或 documents 数据，需输入 `RESET` 确认。
+
+上游还包含：
+
+- `.agents/skills/`：丹麦门户 CLI（Jobbank、Jobdanmark、Jobindex、Jobnet）与
+  `linkedin-search`、`freehire-search` 等跨国聚合 skill。
+- `salary_lookup.py` + `tools/convert_salary_excel.py`：自带数据的薪资基准工具。
+- `tools/security_guards.py`：CI 供应链守卫（权限白名单、gitignore 规则、manifest 检查、pinned actions）。
+- `.github/workflows/ci.yml`：LaTeX 烟雾编译、skill lint、CLI typecheck。
+
+详细使用说明见上游 [README](https://github.com/MadsLorentzen/ai-job-search#readme)、
+[SETUP.md](SETUP.md)、[CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 贡献
+
+想提 PR？先读 [CONTRIBUTING.md](CONTRIBUTING.md)，了解哪些改动会被合并、哪些应该留在 fork。
+
+## 致谢
+
+- [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) 上游项目。
+- [Mikkel Krogholm](https://github.com/mikkelkrogsholm)（[skills 仓库](https://github.com/mikkelkrogsholm/skills)）的招聘搜索 CLI skills。
+- 由 [Anthropic](https://anthropic.com) [Claude Code](https://claude.com/claude-code) 构建。
+
 ## License
 
 本项目使用 MIT License。详见 [LICENSE](LICENSE)。
