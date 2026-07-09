@@ -17,6 +17,7 @@ Parse `$ARGUMENTS` as:
 Actions:
 
 - `setup` -> read and follow `markets/china/workflows/setup-profile.md`
+- `scrape [focus|broad]` -> read and follow `markets/china/workflows/scrape-jobs.md`
 - `analyze <job-file>` -> read and follow `markets/china/workflows/analyze-job.md`
 - `apply <job-file>` -> read and follow `markets/china/workflows/apply-job.md`
 - `rank` -> read and follow `markets/china/workflows/rank-jobs.md`
@@ -24,10 +25,14 @@ Actions:
 
 ## Guardrails
 
-- Do not scrape, log in to, message through, or automate BOSS Zhipin, Liepin,
-  Zhaopin, 51job, Maimai, LinkedIn, or any other job platform.
+- Do not log in to, message through, apply through, or operate BOSS Zhipin,
+  Liepin, Zhaopin, 51job, Maimai, Guopin, or any other job platform account.
+- `/china scrape` may use low-volume WebSearch and WebFetch against public pages
+  only. If a page blocks access, requires login, or returns incomplete content,
+  create a manual-fill job file instead of bypassing the restriction.
 - Use only manually saved job descriptions under `markets/china/jobs/inbox/`,
-  user-pasted text, or files the user explicitly points to.
+  user-pasted text, public pages found by `/china scrape`, or files the user
+  explicitly points to.
 - Treat `markets/china/profile/evidence.md` and the profile files as the source
   of truth. Do not invent experience, credentials, skills, salary history, or
   project outcomes.
@@ -40,6 +45,7 @@ If the action is missing or unknown, show this concise help:
 
 ```text
 /china setup
+/china scrape
 /china analyze markets/china/jobs/inbox/<job>.md
 /china apply markets/china/jobs/inbox/<job>.md
 /china rank

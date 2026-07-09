@@ -49,7 +49,7 @@ Produce:
 
 - BOSS 直聘打招呼话术: 1 concise version under 80 Chinese characters, plus 1
   slightly fuller version under 140 Chinese characters.
-- 招聘者/猎头私信: one message suitable for LinkedIn, Maimai, WeChat, or email.
+- 招聘者/猎头私信: one message suitable for Maimai, WeChat, or email.
 - 中文求职信/邮件: concise, role-specific, evidence-backed.
 - 简历修改建议: bullets to emphasize, bullets to remove, keywords to add only if
   evidence supports them.
