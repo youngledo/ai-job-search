@@ -2,7 +2,7 @@ import { defineCommand, option } from "@bunli/core"
 import { z } from "zod"
 import { apiFetch, writeError, stripHtml } from "../helpers.js"
 
-interface DetailApiResponse {
+export interface DetailApiResponse {
   id: string
   title: string
   body: string
@@ -118,15 +118,23 @@ function outputTable(data: DetailApiResponse): void {
 }
 
 function outputPlain(data: DetailApiResponse): void {
-  console.log(`Title: ${data.title}`)
-  console.log(`Employer: ${data.employer.name}`)
-  console.log(`Location: ${data.job.address.city ?? "-"}, ${data.job.address.countryName}`)
-  console.log(`Published: ${data.publicationDateTime}`)
-  console.log(`Deadline: ${data.application.deadlineDate ?? "-"}`)
-  console.log(`Positions: ${data.application.availablePositions}`)
+  console.log(formatDetailPlain(data))
+}
+
+export function formatDetailPlain(data: DetailApiResponse): string {
+  const lines = [
+    `Title: ${data.title}`,
+    `Employer: ${data.employer.name}`,
+    `Location: ${data.job.address.city ?? "-"}, ${data.job.address.countryName}`,
+    `Published: ${data.publicationDateTime}`,
+    `Deadline: ${data.application.deadlineDate ?? "-"}`,
+    `Positions: ${data.application.availablePositions}`,
+  ]
+
   if (data.application.url) {
-    console.log(`Apply: ${data.application.url}`)
+    lines.push(`Apply: ${data.application.url}`)
   }
-  console.log("")
-  console.log(stripHtml(data.body))
+
+  lines.push("", stripHtml(data.body))
+  return lines.join("\n")
 }

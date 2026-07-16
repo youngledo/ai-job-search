@@ -11,7 +11,7 @@ Follow these steps **in order**.
 ## Step 0: Parse Arguments
 
 - If `$ARGUMENTS` contains `--list`: run **List Mode** below and stop.
-- If `$ARGUMENTS` contains `--use <name>`: skip to **Step 5: Activate** with that template name. `--use default` deactivates any custom template and restores the stock guidance (see Step 5).
+- If `$ARGUMENTS` contains `--use <name>`: run **Switch Mode** below, then continue to **Step 5: Activate** with the resolved template metadata. `--use default` deactivates any custom template and restores the stock guidance (see Step 5).
 - If `$ARGUMENTS` contains a file path or @-mentioned file: treat it as the template source and carry it into Step 1.
 - Otherwise: start the registration flow at Step 1.
 
@@ -28,6 +28,25 @@ Use Glob with `templates/**/TEMPLATE.md` to find registered templates. For each,
 ```
 
 A template is **active** if `05-cv-templates.md` (CV) or `06-cover-letter-templates.md` (cover letter) contains an `ACTIVE-TEMPLATE` managed block naming it. If no custom templates exist, say so and explain that `/add-template` registers one. Stop here.
+
+### Switch Mode
+
+If `$ARGUMENTS` contains `--use <name>`:
+
+1. If `<name>` is `default`, skip template resolution and continue to Step 5 with `default` as the activation target.
+2. Use Glob with `templates/**/TEMPLATE.md` and find manifests whose parent folder name exactly matches `<name>`.
+3. If no manifest matches, stop and say the template is not registered. Suggest `/add-template --list` to see available names.
+4. If more than one manifest matches, stop and list the matching manifest paths. Ask the user to rename one of the templates; activation must be unambiguous.
+5. Read the matching `TEMPLATE.md` and extract:
+   - **Type:** `CV` or `Cover letter`
+   - **Engine:** `lualatex`, `xelatex`, or `pdflatex`
+   - **Page limit:** `<N> page(s)`
+   - **Fonts:** the full font summary line
+6. Derive the template folder from the manifest path and verify `template.tex` exists in the same folder. If it is missing, stop with an error; the template registration is incomplete.
+7. Derive `<type>` for Step 5 from the manifest path:
+   - `templates/cv/<name>/TEMPLATE.md` -> `cv`
+   - `templates/cover_letters/<name>/TEMPLATE.md` -> `cover_letters`
+8. Continue to Step 5 using the resolved `<name>`, `<type>`, `<engine>`, font summary, page limit, template skeleton path, and manifest path. Do not re-run Steps 1-4; `--use` switches an already-registered template.
 
 ---
 
@@ -112,7 +131,7 @@ Never register a template without a successful test compile. LaTeX templates tha
    ```
 3. If the compile fails: show the user the relevant error lines, diagnose (missing font file, wrong engine, missing class), fix what you can (e.g. font `Path` values), and re-compile. If the fix needs input only the user has (a missing font file, a license-restricted class), ask for it and wait.
 4. On success, Read the PDF and confirm the layout renders sensibly (no overlapping text, fonts loaded, page count plausible for dummy content). Record any surprises in the manifest's "Known pitfalls".
-5. Delete the scratch files: `_compile_test.tex`, `_compile_test.pdf`, and all `.aux`/`.log`/`.out` artifacts.
+5. Delete the scratch files and generated artifacts for the test compile: `_compile_test.tex`, `_compile_test.pdf`, `_compile_test.aux`, `_compile_test.log`, `_compile_test.out`, `_compile_test.fls`, `_compile_test.fdb_latexmk`, `_compile_test.synctex.gz`, and any other `_compile_test.*` byproducts.
 
 Do not proceed to Step 5 until the test compile passes.
 
@@ -121,6 +140,8 @@ Do not proceed to Step 5 until the test compile passes.
 ## Step 5: Activate the Template
 
 Activation wires the template into `/apply` by adding a **managed block** to the top of the relevant guidance file — `05-cv-templates.md` for CVs, `06-cover-letter-templates.md` for cover letters. `/apply` reads these files in its drafting step, so the block is all it takes.
+
+If Step 5 was reached from Switch Mode, use the template metadata resolved from `TEMPLATE.md`. If Step 5 was reached after registering a new template, use the metadata collected and verified in Steps 2-4.
 
 Insert (or replace, if one exists) this block immediately after the file's H1 title:
 

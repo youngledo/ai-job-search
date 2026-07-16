@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/mascot/pip_flight_loop.gif" alt="Pip, the courier bird" width="200">
+</p>
+
 # AI Job Search - 中国大陆求职版
 
 这是一个基于 Claude Code 的 AI 求职工作区，面向中国大陆地区的求职流程做了本地化：

@@ -2,14 +2,14 @@ import { defineCommand, option } from "@bunli/core"
 import { z } from "zod"
 import { apiFetch, writeError } from "../helpers.js"
 
-interface SearchApiResponse {
+export interface SearchApiResponse {
   jobAds: JobAdRaw[]
   searchFacets: SearchFacetsRaw
   totalJobAdCount: number
   searchString: string | null
 }
 
-interface JobAdRaw {
+export interface JobAdRaw {
   jobAdId: string
   title: string
   hiringOrgName: string
@@ -33,12 +33,95 @@ interface JobAdRaw {
   description?: string
 }
 
-interface SearchFacetsRaw {
+export interface SearchFacetsRaw {
   regions: Array<{ type: string; jobAdCount: number }>
   workHours: Array<{ type: string; jobAdCount: number }>
   employmentDurations: Array<{ type: string; jobAdCount: number }>
   occupationAreas: Array<{ identifier: string; jobAdCount: number }>
   countries: Array<{ label: string; identifier: string; jobAdCount: number }>
+}
+
+export interface SearchFlags {
+  "search-string"?: string
+  page: number
+  "per-page": number
+  order: string
+  region?: string
+  "work-hours"?: string
+  duration?: string
+  "job-type"?: string
+  "postal-code"?: string
+  radius: number
+  "occupation-area"?: string
+  "occupation-group"?: string
+  limit?: number
+}
+
+export function buildSearchParams(flags: SearchFlags): Record<string, string> {
+  const params: Record<string, string> = {
+    resultsPerPage: String(flags["per-page"]),
+    pageNumber: String(flags.page),
+    orderType: flags.order,
+  }
+
+  if (flags["search-string"]) params["searchString"] = flags["search-string"]
+  if (flags.region) params["regions"] = flags.region
+  if (flags["work-hours"]) params["workHoursType"] = flags["work-hours"]
+  if (flags.duration) params["employmentDurationType"] = flags.duration
+  if (flags["job-type"]) params["jobAnnouncementType"] = flags["job-type"]
+  if (flags["postal-code"]) {
+    params["postalCode"] = flags["postal-code"]
+    params["kmRadius"] = String(flags.radius)
+  }
+  if (flags["occupation-area"]) params["occupationAreas"] = flags["occupation-area"]
+  if (flags["occupation-group"]) params["occupationGroups"] = flags["occupation-group"]
+
+  return params
+}
+
+export function createSearchOutput(data: SearchApiResponse, flags: SearchFlags) {
+  let results = data.jobAds.map((job) => ({
+    jobAdId: job.jobAdId,
+    title: job.title,
+    hiringOrgName: job.hiringOrgName,
+    occupation: job.occupation ?? null,
+    municipality: job.municipality ?? null,
+    postalCode: job.postalCode ?? null,
+    postalDistrictName: job.postalDistrictName ?? null,
+    country: job.country,
+    publicationDate: job.publicationDate,
+    applicationDeadline: job.applicationDeadline ?? null,
+    applicationDeadlineStatus: job.applicationDeadlineStatus ?? null,
+    workHourPartTime: job.workHourPartTime,
+    isExternal: job.isExternal,
+    hasLogo: job.hasLogo,
+    logoUrl: job.logoUrl ?? null,
+    cvr: job.cvr ?? null,
+    workPlaceAddress: job.workPlaceAddress ?? "",
+    isSeen: job.isSeen,
+    isFavorite: job.isFavorite,
+  }))
+
+  if (flags.limit !== undefined) {
+    results = results.slice(0, flags.limit)
+  }
+
+  const facets = {
+    regions: data.searchFacets.regions ?? [],
+    workHours: data.searchFacets.workHours ?? [],
+    employmentDurations: data.searchFacets.employmentDurations ?? [],
+    occupationAreas: data.searchFacets.occupationAreas ?? [],
+    countries: data.searchFacets.countries ?? [],
+  }
+
+  const meta = {
+    totalJobAdCount: data.totalJobAdCount,
+    pageNumber: flags.page,
+    resultsPerPage: flags["per-page"],
+    searchString: data.searchString ?? null,
+  }
+
+  return { meta, facets, results }
 }
 
 export const search = defineCommand({
@@ -91,79 +174,21 @@ export const search = defineCommand({
   handler: async ({ flags, signal }) => {
     if (signal.aborted) return
 
-    const params: Record<string, string> = {
-      resultsPerPage: String(flags["per-page"]),
-      pageNumber: String(flags.page),
-      orderType: flags.order,
-    }
-
-    if (flags["search-string"]) params["searchString"] = flags["search-string"]
-    if (flags.region) params["regions"] = flags.region
-    if (flags["work-hours"]) params["workHoursType"] = flags["work-hours"]
-    if (flags.duration) params["employmentDurationType"] = flags.duration
-    if (flags["job-type"]) params["jobAnnouncementType"] = flags["job-type"]
-    if (flags["postal-code"]) {
-      params["postalCode"] = flags["postal-code"]
-      params["kmRadius"] = String(flags.radius)
-    }
-    if (flags["occupation-area"]) params["occupationAreas"] = flags["occupation-area"]
-    if (flags["occupation-group"]) params["occupationGroups"] = flags["occupation-group"]
+    const params = buildSearchParams(flags)
 
     try {
       const data = await apiFetch<SearchApiResponse>("/FindJob/Search", params)
 
       if (signal.aborted) return
 
-      // Map raw job ads to documented output shape (omit description)
-      let results = data.jobAds.map((job) => ({
-        jobAdId: job.jobAdId,
-        title: job.title,
-        hiringOrgName: job.hiringOrgName,
-        occupation: job.occupation ?? null,
-        municipality: job.municipality ?? null,
-        postalCode: job.postalCode ?? null,
-        postalDistrictName: job.postalDistrictName ?? null,
-        country: job.country,
-        publicationDate: job.publicationDate,
-        applicationDeadline: job.applicationDeadline ?? null,
-        applicationDeadlineStatus: job.applicationDeadlineStatus ?? null,
-        workHourPartTime: job.workHourPartTime,
-        isExternal: job.isExternal,
-        hasLogo: job.hasLogo,
-        logoUrl: job.logoUrl ?? null,
-        cvr: job.cvr ?? null,
-        workPlaceAddress: job.workPlaceAddress ?? "",
-        isSeen: job.isSeen,
-        isFavorite: job.isFavorite,
-      }))
-
-      if (flags.limit !== undefined) {
-        results = results.slice(0, flags.limit)
-      }
-
-      const facets = {
-        regions: data.searchFacets.regions ?? [],
-        workHours: data.searchFacets.workHours ?? [],
-        employmentDurations: data.searchFacets.employmentDurations ?? [],
-        occupationAreas: data.searchFacets.occupationAreas ?? [],
-        countries: data.searchFacets.countries ?? [],
-      }
-
-      const meta = {
-        totalJobAdCount: data.totalJobAdCount,
-        pageNumber: flags.page,
-        resultsPerPage: flags["per-page"],
-        searchString: data.searchString ?? null,
-      }
-
-      const output = { meta, facets, results }
+      const output = createSearchOutput(data, flags)
 
       if (flags.format === "json") {
         console.log(JSON.stringify(output, null, 2))
       } else if (flags.format === "table") {
-        outputTable(results)
+        outputTable(output.results)
       } else {
-        outputPlain(results)
+        outputPlain(output.results)
       }
     } catch (err) {
       writeError(err instanceof Error ? err.message : String(err), "API_ERROR")

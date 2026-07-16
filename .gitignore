@@ -85,3 +85,6 @@ markets/*/jobs/archived/**
 .agents/**/node_modules/
 .agents/**/*.log
 .agents/usage/
+
+# Brainstorm mockups (superpowers visual companion) - never ship
+.superpowers/

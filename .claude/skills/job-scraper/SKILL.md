@@ -1,8 +1,10 @@
 ---
 name: scrape
 description: >
-  Scrapes Danish job sites for new positions matching your profile. Deduplicates across runs.
-  Triggers on: job scrape, find jobs, search jobs, new jobs, job search, scrape jobs, /scrape
+  Finds new job postings matching your profile via installed portal-search CLIs
+  (LinkedIn, local job boards, and any skills added with /add-portal). Deduplicates
+  across runs. Triggers on: job scrape, find jobs, search jobs, new jobs, job search,
+  scrape jobs, /scrape
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bun --version), Bash(bun run .agents/skills/*/cli/src/cli.ts *), WebFetch, WebSearch, Agent, AskUserQuestion
 ---
 
@@ -12,7 +14,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bun --version), Bash(bun run 
 
 ## How It Works
 
-This skill searches multiple Danish job sites using targeted queries based on your profile, deduplicates against previously seen jobs and the application tracker, and presents new matches with a quick fit assessment.
+This skill searches job portals using the **installed portal-search CLIs** in
+`.agents/skills/` (plus WebSearch as a fallback), using queries from your profile.
+It deduplicates against previously seen jobs and the application tracker, and
+presents new matches with a quick fit assessment.
 
 ## Invocation
 
@@ -54,7 +59,9 @@ If this fails (bun not installed), skip to **1c (WebSearch fallback)** for all p
 
 Discover all installed portal CLI skills by reading every `SKILL.md` found under `.agents/skills/*/SKILL.md`. Each file documents that portal's exact CLI flags and usage examples. **Use each portal's own documented interface — do not guess flags.** This approach automatically includes any new portals added via `/add-portal` without requiring changes to this file.
 
-For each installed portal skill:
+**Honor the `enabled` toggle.** A portal is enabled unless its `SKILL.md` frontmatter sets `enabled: false` (a missing key means enabled — the default). Skip each disabled portal and record it for the Step 5 summary. A fork can thus keep a portal installed but sit out a run without deleting its directory.
+
+For each **enabled** portal skill:
 
 1. Read its `SKILL.md` to find the correct `bun run …` invocation and supported flags.
 2. Translate the query terms from `search-queries.md` into that portal's flag format (e.g. `--key`, `--search-string`, `--query`, filter codes — whatever the portal's SKILL.md specifies).
@@ -62,7 +69,7 @@ For each installed portal skill:
 4. Cap results to ~20 per call using the portal's limit flag.
 5. Use `--format json` for machine-readable output.
 
-Run all portal CLI calls in parallel where possible using the Agent tool. Collect all `results` arrays into a single pool for Step 2.
+Run all portal CLI calls in parallel where possible using the Agent tool. Collect all `results` arrays into a single pool for Step 2, keeping each result tagged with its source portal skill (for Step 2 `detail` lookups).
 
 If a CLI tool exits with a non-zero code, log the error message and continue — do not abort the whole search.
 
@@ -78,8 +85,16 @@ Use the site-specific query strings from `search-queries.md` directly as WebSear
 ### Step 2: Fetch & Parse
 
 For each promising result from Step 1:
-- Use `WebFetch` to retrieve the job posting page
-- Extract: **job title**, **company**, **location**, **posting date** (or "recent"), **URL**, **key requirements** (brief), **application deadline** (if listed)
+
+**From CLI results:** Search output already includes title, company, location, date,
+and URL. For jobs worth a deeper look, fetch full detail with that portal's `detail`
+command (see its SKILL.md — do not guess flags) to extract **key requirements**,
+**application deadline**, and a brief description snippet.
+
+**From WebSearch results:** Use `WebFetch` on the posting URL and extract the same
+fields manually.
+
+For every candidate:
 - Skip if the URL or company+title combo already exists in `seen_jobs.json`
 - Skip if the company+role already appears in `job_search_tracker.csv`
 
@@ -108,16 +123,48 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
   }
 }
 ```
+
+`/rank` extends this schema additively: ranked entries also carry `rank_score` (0–100 overall score), `rank_verdict` (fit band, e.g. "strong fit"), and `rank_date` (ISO date of ranking). The `status` field is set to `"ranked"`. Do not drop any of these fields when re-writing entries.
+
 2. Only present jobs NOT already in the seen list or tracker.
+
+### Step 4.5: Generate Referral Contact Links (High & Medium Fit Only)
+
+For every job from this run with `fit` of **high** or **medium** (skip low-fit jobs),
+build two LinkedIn people-search URLs so the user can find a recruiter or team member to
+reach out to for a referral or a warm intro. This is deliberately a link-generation step,
+not an automated lookup: no scraping, no third-party API, zero runtime dependencies or
+credentials required.
+
+**A. Recruiters / Talent Acquisition (the referral path)**
+```
+https://www.linkedin.com/search/results/people/?keywords=<url-encoded "<Company Name> recruiter">&origin=GLOBAL_SEARCH_HEADER
+```
+
+**B. Role/team peers (informational-outreach / warm-intro path)**
+```
+https://www.linkedin.com/search/results/people/?keywords=<url-encoded "<Company Name> <role keyword>">&origin=GLOBAL_SEARCH_HEADER
+```
+Use a short keyword drawn from the posting's title for `<role keyword>` - e.g. a posting
+titled "AI Program Manager" becomes `"<Company Name> AI Program Manager"`.
+
+Both links are for the user to open and browse themselves - never fetch or scrape the
+LinkedIn people-search result pages programmatically. Never fabricate contacts or claim a
+specific person was found; these are search links, not results.
 
 ### Step 5: Present Results
 
-Present new jobs in a table sorted by fit (high first):
+Present new jobs in a table sorted by fit (high first). When Step 1b skipped
+portals (`enabled: false`), report them with the `skipped (disabled):` line below
+so opting one out stays visible rather than silent; omit the line when nothing
+was skipped.
 
 ```
 ## New Job Matches - YYYY-MM-DD
 
 Found X new positions (Y high, Z medium, W low match).
+
+skipped (disabled): <portal-name>, <portal-name>
 
 | # | Fit | Title | Company | Location | Deadline | URL |
 |---|-----|-------|---------|----------|----------|-----|
@@ -128,6 +175,12 @@ For each high-match job, add 2-3 bullet points:
 - Why it matches your profile
 - Key requirements to check
 - Any red flags
+
+### Contacts
+For each high/medium-fit job from Step 4.5, add a short contacts block with the two
+LinkedIn search links:
+- Recruiters/TA search link, for the referral path
+- Role/team-peer search link, for the warm-intro / informational-outreach path
 ```
 
 After presenting, ask:
@@ -145,9 +198,10 @@ If the user decides to apply to any job, add a row to `job_search_tracker.csv`.
 
 ## Important Rules
 
-1. **Never fabricate job postings.** Only present jobs found via actual WebSearch/WebFetch results.
+1. **Never fabricate job postings.** Only present jobs from actual CLI search/detail output or WebSearch/WebFetch results.
 2. **Respect deduplication.** Always check seen_jobs.json AND job_search_tracker.csv before presenting.
 3. **Focus on configured geographic area.** Skip jobs that require relocation or are clearly outside commute range.
 4. **Only open positions.** Skip postings with expired deadlines or those marked as closed.
-5. **Be efficient with WebFetch.** Don't fetch every search result - use titles and snippets to pre-filter before fetching.
-6. **Parallel searches.** Use the Agent tool or parallel WebSearch calls to speed up the search phase.
+5. **Be efficient with detail fetches.** Don't run `detail` or WebFetch on every search hit — pre-filter by title/snippet, then fetch only promising matches.
+6. **Parallel searches.** Run portal CLI searches in parallel; use WebSearch only for gaps the CLIs don't cover.
+7. **No automated people lookups.** Referral contacts (Step 4.5) are LinkedIn search links only - never fetch or scrape LinkedIn people-search result pages programmatically.

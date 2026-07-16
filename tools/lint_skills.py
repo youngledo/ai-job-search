@@ -84,7 +84,14 @@ def check_settings() -> None:
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f".claude/settings.json: {exc}")
         return
-    if not isinstance(data.get("permissions", {}).get("allow"), list):
+    if not isinstance(data, dict):
+        errors.append(".claude/settings.json: expected top-level JSON value to be an object")
+        return
+    permissions = data.get("permissions", {})
+    if not isinstance(permissions, dict):
+        errors.append(".claude/settings.json: expected permissions to be an object")
+        return
+    if not isinstance(permissions.get("allow"), list):
         errors.append(".claude/settings.json: expected permissions.allow to be a list")
 
 

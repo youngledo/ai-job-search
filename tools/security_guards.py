@@ -65,7 +65,17 @@ def check_permissions() -> None:
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f".claude/settings.json: unreadable or invalid JSON: {exc}")
         return
-    allow = data.get("permissions", {}).get("allow", [])
+    if not isinstance(data, dict):
+        errors.append(".claude/settings.json: top-level JSON value must be an object")
+        return
+    permissions = data.get("permissions", {})
+    if not isinstance(permissions, dict):
+        errors.append(".claude/settings.json: permissions must be an object")
+        return
+    allow = permissions.get("allow", [])
+    if not isinstance(allow, list) or not all(isinstance(entry, str) for entry in allow):
+        errors.append(".claude/settings.json: permissions.allow must be a list of strings")
+        return
     for entry in allow:
         if entry not in ALLOWED_PERMISSIONS:
             errors.append(
@@ -110,7 +120,14 @@ def check_package_manifests() -> None:
         except (OSError, json.JSONDecodeError) as exc:
             errors.append(f"{relpath}: unreadable or invalid JSON: {exc}")
             continue
-        bad = FORBIDDEN_SCRIPTS & set(data.get("scripts", {}))
+        if not isinstance(data, dict):
+            errors.append(f"{relpath}: top-level JSON value must be an object")
+            continue
+        scripts = data.get("scripts", {})
+        if not isinstance(scripts, dict):
+            errors.append(f"{relpath}: scripts must be an object")
+            continue
+        bad = FORBIDDEN_SCRIPTS & set(scripts)
         if bad:
             errors.append(
                 f"{relpath}: lifecycle script(s) {sorted(bad)} are forbidden - they execute "
