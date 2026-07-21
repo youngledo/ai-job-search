@@ -105,10 +105,10 @@ export const search = defineCommand({
     "job-type": option(z.string().optional(), {
       description: "Comma-separated job types: fuldtid,deltid,fleksjob,elev,studiejob,praktik",
     }),
-    page: option(z.coerce.number().default(1), {
+    page: option(z.coerce.number().int().min(1).default(1), {
       description: "Page number (30 items per page, server-enforced)",
     }),
-    limit: option(z.coerce.number().optional(), {
+    limit: option(z.coerce.number().int().min(1).optional(), {
       description: "Cap total results returned by CLI (client-side)",
     }),
     format: option(z.enum(["json", "table", "plain"]).default("json"), {

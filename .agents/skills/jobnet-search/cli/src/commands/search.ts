@@ -131,10 +131,10 @@ export const search = defineCommand({
     "search-string": option(z.string().optional(), {
       description: "Free-text keyword search (job title, skills, employer)",
     }),
-    page: option(z.coerce.number().default(1), {
+    page: option(z.coerce.number().int().min(1).default(1), {
       description: "Page number (1-indexed)",
     }),
-    "per-page": option(z.coerce.number().default(10), {
+    "per-page": option(z.coerce.number().int().min(1).default(10), {
       description: "Results per page",
     }),
     order: option(z.string().default("PublicationDate"), {
@@ -164,7 +164,7 @@ export const search = defineCommand({
     "occupation-group": option(z.string().optional(), {
       description: "Occupation group identifier, e.g. 10060",
     }),
-    limit: option(z.coerce.number().optional(), {
+    limit: option(z.coerce.number().int().min(1).optional(), {
       description: "Cap total results returned by CLI",
     }),
     format: option(z.enum(["json", "table", "plain"]).default("json"), {

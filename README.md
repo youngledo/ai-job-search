@@ -233,6 +233,7 @@ xelatex -interaction=nonstopmode cover_example.tex
 
 - 使用 `/china ...` 处理中国大陆岗位、BOSS 打招呼、中文材料和面试准备。
 - 使用 `/setup`、`/apply`、`/rank`、`/interview`、`/outcome` 处理通用或英文申请流程。
+- `/gmail-sync` 会在写入前让你确认 Gmail 中识别出的申请状态；`/notion-sync` 提供只读 Notion 看板；`/html-report` 生成离线仪表盘；`/upskill` 分析岗位技能差距。
 
 长期申请状态仍然可以记录在根目录的 `job_search_tracker.csv`。如果你希望保留完整申请
 材料，也可以继续使用 `documents/applications/`。
@@ -243,6 +244,7 @@ xelatex -interaction=nonstopmode cover_example.tex
 - 不要让工具替你自动登录、自动私信或自动投递。
 - 对 JD 中没有写清的信息，输出中应标记为缺失信息，而不是猜测。
 - 对你没有证据支撑的技能或成果，必须标记为 gap 或待确认，不能写成已有经验。
+- 岗位描述被视为不可信输入；在陌生网站上，请在发送前检查抓取与生成的内容。详见 [SECURITY.md](SECURITY.md)。
 - 如果要公开仓库，先确认 `markets/china/profile/`、`markets/china/jobs/`、
   `documents/` 和 `job_search_tracker.csv` 中没有个人隐私。
 
@@ -254,7 +256,8 @@ xelatex -interaction=nonstopmode cover_example.tex
 - `/setup`：通用 onboarding（可指向 `documents/` 文件夹、粘贴 CV 或交互式访谈）。
 - `/apply`：英文 CV + 求职信的 drafter-reviewer 工作流，包含 PDF 编译与 ATS 文本层校验。
 - `/expand`：基于 `documents/` 与公开信息扩展能力档案。
-- `/rank`、`/interview`、`/outcome`：通用版本的岗位排序、面试准备与结果归档。
+- `/rank`、`/interview`、`/outcome`：通用版本的岗位排序、面试准备与结果归档；`/outcome followup` 可为长期无回应的申请准备跟进草稿。
+- `/gmail-sync`、`/notion-sync`、`/html-report`、`/upskill`：Gmail 状态同步提议、只读 Notion 管道视图、离线求职看板与技能差距分析。
 - `/add-template`：注册自定义 LaTeX 模板（占位符形式，可安全提交）。
 - `/add-portal`：为你的国家/地区生成本地招聘门户 CLI skill（拒绝登录墙门户）。
 - `/reset`：清除 profile 或 documents 数据，需输入 `RESET` 确认。

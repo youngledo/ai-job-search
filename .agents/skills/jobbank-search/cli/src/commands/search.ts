@@ -39,7 +39,7 @@ export const search = defineCommand({
     since: option(z.string().optional(), {
       description: "Posted on or after date, format YYYY-MM-DD (oprettet)",
     }),
-    limit: option(z.coerce.number().optional(), {
+    limit: option(z.coerce.number().int().min(1).optional(), {
       description: "Cap total results returned by CLI (client-side)",
     }),
     format: option(z.enum(["json", "table", "plain"]).default("json"), {
